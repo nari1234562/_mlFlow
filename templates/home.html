@@ -5,54 +5,52 @@
 <title>Loan Prediction Web App</title>
 
 <style>
-
-body{
-font-family: Arial;
-margin:40px;
-background-color:#f4f4f4;
+body {
+    font-family: Arial;
+    margin: 40px;
+    background-color: #f4f4f4;
 }
 
-h1{
-color:#333;
+h1 {
+    color: #333;
 }
 
-form{
-background-color:#fff;
-padding:20px;
-border-radius:10px;
-box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
 }
 
-input,select{
-width:250px;
-margin-bottom:10px;
-padding:6px;
+input, select {
+    width: 250px;
+    margin-bottom: 10px;
+    padding: 6px;
 }
 
-label{
-display:block;
-margin-top:10px;
-font-weight:bold;
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
 }
 
-button{
-padding:10px 20px;
-margin-top:15px;
-cursor:pointer;
-background-color:#4CAF50;
-color:#fff;
-border:none;
-border-radius:5px;
+button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
 }
 
-.result{
-margin-top:20px;
-background:#fff;
-padding:15px;
-border-radius:10px;
-box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+.result {
+    margin-top: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
 }
-
 </style>
 </head>
 
@@ -63,162 +61,86 @@ box-shadow:0px 0px 10px rgba(0,0,0,0.1);
 <form action="{{ url_for('predict_datapoint') }}" method="post">
 
 <label>Age:</label>
-<input type="number" name="age" min="18" max="100" required
-value="{{ inputs.age if inputs }}">
+<input type="number" name="age" min="18" max="100" required value="{{ inputs.age if inputs }}">
 
 <label>Gender:</label>
 <select name="gender" required>
-
-<option disabled {% if not inputs %}selected{% endif %}>Select Gender</option>
-
-<option value="male"
-{% if inputs and inputs.gender=='male' %}selected{% endif %}>Male</option>
-
-<option value="female"
-{% if inputs and inputs.gender=='female' %}selected{% endif %}>Female</option>
-
+    <option disabled {% if not inputs %}selected{% endif %}>Select Gender</option>
+    <option value="male" {% if inputs and inputs.gender=='male' %}selected{% endif %}>Male</option>
+    <option value="female" {% if inputs and inputs.gender=='female' %}selected{% endif %}>Female</option>
 </select>
-
 
 <label>Education Level:</label>
 <select name="education_level" required>
-
-<option disabled {% if not inputs %}selected{% endif %}>Select Education</option>
-
-<option value="High School"
-{% if inputs and inputs.education_level=='High School' %}selected{% endif %}>High School</option>
-
-<option value="Associate"
-{% if inputs and inputs.education_level=='Associate' %}selected{% endif %}>Associate</option>
-
-<option value="Bachelor"
-{% if inputs and inputs.education_level=='Bachelor' %}selected{% endif %}>Bachelor</option>
-
-<option value="Master"
-{% if inputs and inputs.education_level=='Master' %}selected{% endif %}>Master</option>
-
-<option value="Doctorate"
-{% if inputs and inputs.education_level=='Doctorate' %}selected{% endif %}>Doctorate</option>
-
+    <option disabled {% if not inputs %}selected{% endif %}>Select Education</option>
+    <option value="High School" {% if inputs and inputs.education_level=='High School' %}selected{% endif %}>High School</option>
+    <option value="Associate" {% if inputs and inputs.education_level=='Associate' %}selected{% endif %}>Associate</option>
+    <option value="Bachelor" {% if inputs and inputs.education_level=='Bachelor' %}selected{% endif %}>Bachelor</option>
+    <option value="Master" {% if inputs and inputs.education_level=='Master' %}selected{% endif %}>Master</option>
+    <option value="Doctorate" {% if inputs and inputs.education_level=='Doctorate' %}selected{% endif %}>Doctorate</option>
 </select>
 
-
 <label>Annual Income:</label>
-<input type="number" name="annual_income" required
-value="{{ inputs.annual_income if inputs }}">
-
+<input type="number" name="annual_income" required value="{{ inputs.annual_income if inputs }}">
 
 <label>Employment Experience (Years):</label>
-<input type="number" name="employment_experience_years" required
-value="{{ inputs.employment_experience_years if inputs }}">
-
+<input type="number" name="employment_experience_years" required value="{{ inputs.employment_experience_years if inputs }}">
 
 <label>Home Ownership Status:</label>
 <select name="home_ownership_status" required>
-
-<option disabled {% if not inputs %}selected{% endif %}>Select Ownership</option>
-
-<option value="OWN"
-{% if inputs and inputs.home_ownership_status=='OWN' %}selected{% endif %}>OWN</option>
-
-<option value="RENT"
-{% if inputs and inputs.home_ownership_status=='RENT' %}selected{% endif %}>RENT</option>
-
-<option value="MORTGAGE"
-{% if inputs and inputs.home_ownership_status=='MORTGAGE' %}selected{% endif %}>MORTGAGE</option>
-
+    <option disabled {% if not inputs %}selected{% endif %}>Select Ownership</option>
+    <option value="OWN" {% if inputs and inputs.home_ownership_status=='OWN' %}selected{% endif %}>OWN</option>
+    <option value="RENT" {% if inputs and inputs.home_ownership_status=='RENT' %}selected{% endif %}>RENT</option>
+    <option value="MORTGAGE" {% if inputs and inputs.home_ownership_status=='MORTGAGE' %}selected{% endif %}>MORTGAGE</option>
 </select>
 
-
 <label>Loan Amount:</label>
-<input type="number" name="loan_amount" required
-value="{{ inputs.loan_amount if inputs }}">
-
+<input type="number" name="loan_amount" required value="{{ inputs.loan_amount if inputs }}">
 
 <label>Loan Purpose:</label>
 <select name="loan_purpose" required>
-
-<option disabled {% if not inputs %}selected{% endif %}>Select Purpose</option>
-
-<option value="PERSONAL"
-{% if inputs and inputs.loan_purpose=='PERSONAL' %}selected{% endif %}>PERSONAL</option>
-
-<option value="HOME"
-{% if inputs and inputs.loan_purpose=='HOME' %}selected{% endif %}>HOME</option>
-
-<option value="VEHICLE"
-{% if inputs and inputs.loan_purpose=='VEHICLE' %}selected{% endif %}>VEHICLE</option>
-
-<option value="EDUCATION"
-{% if inputs and inputs.loan_purpose=='EDUCATION' %}selected{% endif %}>EDUCATION</option>
-
+    <option disabled {% if not inputs %}selected{% endif %}>Select Purpose</option>
+    <option value="PERSONAL" {% if inputs and inputs.loan_purpose=='PERSONAL' %}selected{% endif %}>PERSONAL</option>
+    <option value="HOME" {% if inputs and inputs.loan_purpose=='HOME' %}selected{% endif %}>HOME</option>
+    <option value="VEHICLE" {% if inputs and inputs.loan_purpose=='VEHICLE' %}selected{% endif %}>VEHICLE</option>
+    <option value="EDUCATION" {% if inputs and inputs.loan_purpose=='EDUCATION' %}selected{% endif %}>EDUCATION</option>
 </select>
 
-
 <label>Interest Rate (%):</label>
-<input type="number" name="interest_rate" required
-value="{{ inputs.interest_rate if inputs }}">
-
+<input type="number" name="interest_rate" required value="{{ inputs.interest_rate if inputs }}">
 
 <label>Loan to Income Ratio:</label>
-<input type="number" step="any" name="loan_to_income_ratio" required
-value="{{ inputs.loan_to_income_ratio if inputs }}">
-
+<input type="number" step="any" name="loan_to_income_ratio" required value="{{ inputs.loan_to_income_ratio if inputs }}">
 
 <label>Credit History Length (Years):</label>
-<input type="number" name="credit_history_length_years" required
-value="{{ inputs.credit_history_length_years if inputs }}">
-
+<input type="number" name="credit_history_length_years" required value="{{ inputs.credit_history_length_years if inputs }}">
 
 <label>Credit Score:</label>
-<input type="number" name="credit_score" required
-value="{{ inputs.credit_score if inputs }}">
-
+<input type="number" name="credit_score" required value="{{ inputs.credit_score if inputs }}">
 
 <label>Prior Default Flag:</label>
 <select name="prior_default_flag" required>
-
-<option disabled {% if not inputs %}selected{% endif %}>Select</option>
-
-<option value="0"
-{% if inputs and inputs.prior_default_flag=='0' %}selected{% endif %}>No</option>
-
-<option value="1"
-{% if inputs and inputs.prior_default_flag=='1' %}selected{% endif %}>Yes</option>
-
+    <option disabled {% if not inputs %}selected{% endif %}>Select</option>
+    <option value="0" {% if inputs and inputs.prior_default_flag=='0' %}selected{% endif %}>No</option>
+    <option value="1" {% if inputs and inputs.prior_default_flag=='1' %}selected{% endif %}>Yes</option>
 </select>
 
-
 <button type="submit">Predict Loan Status</button>
-
 </form>
 
-
 {% if status %}
-
 <div class="result">
-
-<h2>Prediction Result</h2>
-
-<p><strong>Prediction Class:</strong> {{ prediction }}</p>
-
-<p><strong>Status:</strong> {{ status }}</p>
-
-<p><strong>Probability of Rejection:</strong> {{ probability }}%</p>
-
+    <h2>Prediction Result</h2>
+    <p><strong>Prediction Class:</strong> {{ prediction }}</p>
+    <p><strong>Status:</strong> {{ status }}</p>
+    <p><strong>Probability of Rejection:</strong> {{ probability }}</p>
 </div>
-
 {% endif %}
 
-
 {% if error %}
-
 <div class="result" style="color:red;">
-
-<p>{{ error }}</p>
-
+    <p>{{ error }}</p>
 </div>
-
 {% endif %}
 
 </body>

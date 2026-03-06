@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/_mlFlow/ml_Project_End_To_End/mlruns/670420614019018850/f784a06d9ff941bf9e2fb2acbefa0251/artifacts
+end_time: 1772786152774
+entry_point_name: ''
+experiment_id: '670420614019018850'
+lifecycle_stage: active
+run_id: f784a06d9ff941bf9e2fb2acbefa0251
+run_name: Gradient Boosting
+run_uuid: f784a06d9ff941bf9e2fb2acbefa0251
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1772786150555
+status: 3
+tags: []
+user_id: badis

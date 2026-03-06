@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/_mlFlow/ml_Project_End_To_End/mlruns/670420614019018850/eec1ae1ac1e3453a82730edfd51c494c/artifacts
+end_time: 1772786155451
+entry_point_name: ''
+experiment_id: '670420614019018850'
+lifecycle_stage: active
+run_id: eec1ae1ac1e3453a82730edfd51c494c
+run_name: XGBoost
+run_uuid: eec1ae1ac1e3453a82730edfd51c494c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1772786152790
+status: 3
+tags: []
+user_id: badis

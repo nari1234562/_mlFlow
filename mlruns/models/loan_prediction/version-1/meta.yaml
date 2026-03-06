@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1772786357129
+current_stage: Production
+description: ''
+last_updated_timestamp: 1772786549870
+name: loan_prediction
+run_id: eec1ae1ac1e3453a82730edfd51c494c
+run_link: ''
+source: file:///D:/_mlFlow/ml_Project_End_To_End/mlruns/670420614019018850/eec1ae1ac1e3453a82730edfd51c494c/artifacts/model
+status: READY
+status_message: null
+storage_location: file:///D:/_mlFlow/ml_Project_End_To_End/mlruns/670420614019018850/eec1ae1ac1e3453a82730edfd51c494c/artifacts/model
+user_id: null
+version: 1

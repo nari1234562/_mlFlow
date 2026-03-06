@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/_mlFlow/ml_Project_End_To_End/mlruns/670420614019018850/530cecd3ce1f45458a973e3983de6d99/artifacts
+end_time: 1772786147926
+entry_point_name: ''
+experiment_id: '670420614019018850'
+lifecycle_stage: active
+run_id: 530cecd3ce1f45458a973e3983de6d99
+run_name: Logistic Regression
+run_uuid: 530cecd3ce1f45458a973e3983de6d99
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1772786142966
+status: 3
+tags: []
+user_id: badis

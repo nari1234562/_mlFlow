@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/_mlFlow/ml_Project_End_To_End/mlruns/670420614019018850/fe1afb9823df4a4abc8fd2006c668edd/artifacts
+end_time: 1772786150540
+entry_point_name: ''
+experiment_id: '670420614019018850'
+lifecycle_stage: active
+run_id: fe1afb9823df4a4abc8fd2006c668edd
+run_name: Random Forest
+run_uuid: fe1afb9823df4a4abc8fd2006c668edd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1772786147932
+status: 3
+tags: []
+user_id: badis

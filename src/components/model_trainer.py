@@ -1,6 +1,8 @@
 import os
 import sys
-from dataclasses import dataclass
+
+import mlflow
+import mlflow.sklearn
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -8,23 +10,16 @@ from xgboost import XGBClassifier
 
 from src.exception import CustomException
 from src.logger import logging
-from src.utils import save_object, evaluate_models
-
-
-@dataclass
-class ModelTrainerConfig:
-    trained_model_file_path = os.path.join("artifacts", "model.pkl")
+from src.utils import evaluate_models
 
 
 class ModelTrainer:
 
-    def __init__(self):
-        self.model_trainer_config = ModelTrainerConfig()
-
     def initiate_model_trainer(self, train_array, test_array):
 
         try:
-            logging.info("Split training and test data")
+
+            logging.info("Splitting training and test data")
 
             X_train, y_train, X_test, y_test = (
                 train_array[:, :-1],
@@ -33,103 +28,121 @@ class ModelTrainer:
                 test_array[:, -1]
             )
 
-            # Handle class imbalance for XGBoost
-            scale_pos_weight = (len(y_train) - sum(y_train)) / sum(y_train)
+        
 
-            # -----------------------------
+            # ==========================
             # MODELS
-            # -----------------------------
+            # ==========================
             models = {
+
                 "Logistic Regression": LogisticRegression(
                     max_iter=1000,
                     class_weight="balanced"
                 ),
+
                 "Random Forest": RandomForestClassifier(
                     class_weight="balanced",
                     random_state=42
                 ),
+
                 "Gradient Boosting": GradientBoostingClassifier(
                     random_state=42
                 ),
+
                 "XGBoost": XGBClassifier(
                     eval_metric="logloss",
                     random_state=42,
-                    scale_pos_weight=scale_pos_weight,
                     n_jobs=-1
                 )
             }
 
-            # -----------------------------
+            # ==========================
             # HYPERPARAMETERS
-            # -----------------------------
+            # ==========================
             params = {
+
                 "Logistic Regression": {"C": [0.01, 0.1, 1, 10]},
-                "Random Forest": {"n_estimators": [200, 300], "max_depth": [10, 15], "min_samples_split": [5, 10]},
-                "Gradient Boosting": {"n_estimators": [100, 200], "learning_rate": [0.01, 0.05, 0.1], "max_depth": [3, 5]},
+
+                "Random Forest": {
+                    "n_estimators": [200, 300],
+                    "max_depth": [10, 15],
+                    "min_samples_split": [5, 10]
+                },
+
+                "Gradient Boosting": {
+                    "n_estimators": [100, 200],
+                    "learning_rate": [0.01, 0.05, 0.1],
+                    "max_depth": [3, 5]
+                },
+
                 "XGBoost": {
                     "n_estimators": [300, 500],
                     "learning_rate": [0.01, 0.05],
                     "max_depth": [3, 5],
                     "min_child_weight": [1, 3],
-                    "subsample": [0.8, 1.0],
+                    "subsample": [0.8, 1.0,0.6],
                     "colsample_bytree": [0.8, 1.0],
                     "gamma": [0, 0.1],
                     "reg_alpha": [0, 0.1],
-                    "reg_lambda": [1, 5]
+                    "reg_lambda": [1, 5],
+                    "scale_pos_weight": [1, 2, 5, 10]
                 }
             }
 
-            # -----------------------------
-            # TRAIN MODELS
-            # -----------------------------
-            # Use threshold 0.6 for XGBoost preference
+            # ==========================
+            # EVALUATE MODELS
+            # ==========================
             model_report = evaluate_models(
-                X_train=X_train,
-                y_train=y_train,
-                X_test=X_test,
-                y_test=y_test,
-                models=models,
-                param=params,
+                X_train,
+                y_train,
+                X_test,
+                y_test,
+                models,
+                params,
                 threshold=0.6
             )
 
-            print("\nModel Performance:\n")
+            # ==========================
+            # SET MLFLOW EXPERIMENT
+            # ==========================
+            mlflow.set_experiment("Loan_Prediction_Experiments")
+
+            print("\nLogging experiments to MLflow...\n")
+
+            # ==========================
+            # LOG EACH MODEL
+            # ==========================
             for model_name, metrics in model_report.items():
-                print(f"{model_name}")
-                print(metrics)
-                print("-"*40)
 
-            # -----------------------------
-            # SELECT BEST MODEL
-            # Prefer XGBoost if F1 is close to others
-            # -----------------------------
-            best_model_name = None
-            best_f1_score = 0
+                with mlflow.start_run(run_name=model_name):
 
-            for model_name, metrics in model_report.items():
-                f1 = metrics["test_f1"]
-                if model_name == "XGBoost":
-                    # Give XGBoost slight preference (+0.01 fudge factor)
-                    f1 += 0.01
-                if f1 > best_f1_score:
-                    best_f1_score = f1
-                    best_model_name = model_name
+                    model = metrics["model"]
 
-            best_model = models[best_model_name]
+                    # log hyperparameters
+                    mlflow.log_params(metrics["best_params"])
 
-            logging.info(f"Best Model: {best_model_name}")
-            logging.info(f"Best F1 Score: {best_f1_score}")
+                    # log metrics
+                    mlflow.log_metric("train_accuracy", metrics["train_accuracy"])
+                    mlflow.log_metric("test_accuracy", metrics["test_accuracy"])
 
-            # Save best model
-            save_object(
-                file_path=self.model_trainer_config.trained_model_file_path,
-                obj=best_model
-            )
+                    mlflow.log_metric("train_precision", metrics["train_precision"])
+                    mlflow.log_metric("test_precision", metrics["test_precision"])
 
-            print(f"\nBest Model Selected: {best_model_name}")
-            print(f"Best F1 Score: {best_f1_score}")
+                    mlflow.log_metric("train_recall", metrics["train_recall"])
+                    mlflow.log_metric("test_recall", metrics["test_recall"])
 
-            return best_f1_score
+                    mlflow.log_metric("train_f1", metrics["train_f1"])
+                    mlflow.log_metric("test_f1", metrics["test_f1"])
+
+                    mlflow.log_metric("train_auc", metrics["train_auc"])
+                    mlflow.log_metric("test_auc", metrics["test_auc"])
+
+                    # log model
+                    mlflow.sklearn.log_model(model, "model")
+
+                    print(f"{model_name} logged to MLflow")
+
+            print("\nAll experiments logged to MLflow successfully.")
 
         except Exception as e:
             raise CustomException(e, sys)

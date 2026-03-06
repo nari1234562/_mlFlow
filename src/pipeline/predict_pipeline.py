@@ -1,27 +1,41 @@
 import os
 import sys
 import pandas as pd
+import mlflow.pyfunc
 from src.exception import CustomException
 from src.utils import load_object
 
 class PredictPipeline:
     def __init__(self):
-        pass
+        try:
+            # Load Production model from MLflow Model Registry
+            import mlflow.sklearn
+
+            self.model = mlflow.sklearn.load_model("models:/loan_prediction/Production")
+
+            # Load preprocessor
+            preprocessor_path = os.path.join("artifacts", "preprocessor.pkl")
+            self.preprocessor = load_object(preprocessor_path)
+
+        except Exception as e:
+            raise CustomException(e, sys)
 
     def predict(self, features):
         try:
-            model_path = os.path.join("artifacts", "model.pkl")
-            preprocessor_path = os.path.join("artifacts", "preprocessor.pkl")
+            # Transform features
+            data_scaled = self.preprocessor.transform(features)
+            data_scaled = pd.DataFrame(data_scaled)  # DO NOT specify columns
 
-            model = load_object(model_path)
-            preprocessor = load_object(preprocessor_path)
+            # Predictions
+            preds = self.model.predict(data_scaled)
 
-            # Preprocess features
-            data_scaled = preprocessor.transform(features)
-
-            # Prediction and probability
-            preds = model.predict(data_scaled)
-            probs = model.predict_proba(data_scaled)[:, 1]  # probability of rejection
+            # Probability if available
+            probs = None
+            try:
+                if hasattr(self.model, "predict_proba"):
+                    probs = self.model.predict_proba(data_scaled)[:, 1]
+            except:
+                probs = None
 
             return preds, probs
 
@@ -30,12 +44,22 @@ class PredictPipeline:
 
 
 class CustomData:
-    def __init__(self, age: int, gender: str, education_level: str, annual_income: float,
-                 employment_experience_years: int, home_ownership_status: str,
-                 loan_amount: float, loan_purpose: str, interest_rate: float,
-                 loan_to_income_ratio: float, credit_history_length_years: int,
-                 credit_score: int, prior_default_flag: int):
-
+    def __init__(
+        self,
+        age: int,
+        gender: str,
+        education_level: str,
+        annual_income: float,
+        employment_experience_years: int,
+        home_ownership_status: str,
+        loan_amount: float,
+        loan_purpose: str,
+        interest_rate: float,
+        loan_to_income_ratio: float,
+        credit_history_length_years: int,
+        credit_score: int,
+        prior_default_flag: int,
+    ):
         self.age = age
         self.gender = gender
         self.education_level = education_level
@@ -65,7 +89,7 @@ class CustomData:
                 "loan_to_income_ratio": [self.loan_to_income_ratio],
                 "credit_history_length_years": [self.credit_history_length_years],
                 "credit_score": [self.credit_score],
-                "prior_default_flag": [self.prior_default_flag]
+                "prior_default_flag": [self.prior_default_flag],
             }
             return pd.DataFrame(data_dict)
         except Exception as e:
