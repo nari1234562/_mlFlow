@@ -12,9 +12,9 @@ def run_training_pipeline():
     try:
         logging.info("Training Pipeline Started")
 
-        # ==============================
-        # 1️⃣ DATA INGESTION
-        # ==============================
+  
+        # 1️.DATA INGESTION
+
         logging.info("Starting Data Ingestion")
 
         ingestion = DataIngestion()
@@ -22,9 +22,9 @@ def run_training_pipeline():
 
         logging.info("Data Ingestion Completed")
 
-        # ==============================
-        # 2️⃣ DATA VALIDATION
-        # ==============================
+
+        # 2️.DATA VALIDATION
+      
         logging.info("Starting Data Validation")
 
         validation = DataValidation()
@@ -35,9 +35,9 @@ def run_training_pipeline():
 
         logging.info("Data Validation Passed")
 
-        # ==============================
-        # 3️⃣ DATA TRANSFORMATION
-        # ==============================
+  
+        # 3️.DATA TRANSFORMATION
+  
         logging.info("Starting Data Transformation")
 
         data_transformation = DataTransformation()
@@ -49,9 +49,9 @@ def run_training_pipeline():
 
         logging.info("Data Transformation Completed")
 
-        # ==============================
-        # 4️⃣ MODEL TRAINER
-        # ==============================
+  
+        # 4️. MODEL TRAINER
+   
         logging.info("Starting Model Training")
 
         model_trainer = ModelTrainer()
