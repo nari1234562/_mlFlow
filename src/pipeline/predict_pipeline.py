@@ -8,12 +8,12 @@ from src.utils import load_object
 class PredictPipeline:
     def __init__(self):
         try:
-            # Load Production model from MLflow Model Registry
+       
             import mlflow.sklearn
 
             self.model = mlflow.sklearn.load_model("models:/loan_prediction/Production")
 
-            # Load preprocessor
+        
             preprocessor_path = os.path.join("artifacts", "preprocessor.pkl")
             self.preprocessor = load_object(preprocessor_path)
 
