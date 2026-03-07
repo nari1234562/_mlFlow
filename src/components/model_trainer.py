@@ -30,9 +30,7 @@ class ModelTrainer:
 
         
 
-            # ==========================
-            # MODELS
-            # ==========================
+            
             models = {
 
                 "Logistic Regression": LogisticRegression(
@@ -56,9 +54,6 @@ class ModelTrainer:
                 )
             }
 
-            # ==========================
-            # HYPERPARAMETERS
-            # ==========================
             params = {
 
                 "Logistic Regression": {"C": [0.01, 0.1, 1, 10]},
@@ -89,9 +84,7 @@ class ModelTrainer:
                 }
             }
 
-            # ==========================
-            # EVALUATE MODELS
-            # ==========================
+            
             model_report = evaluate_models(
                 X_train,
                 y_train,
@@ -102,16 +95,12 @@ class ModelTrainer:
                 threshold=0.6
             )
 
-            # ==========================
-            # SET MLFLOW EXPERIMENT
-            # ==========================
+       
             mlflow.set_experiment("Loan_Prediction_Experiments")
 
             print("\nLogging experiments to MLflow...\n")
 
-            # ==========================
-            # LOG EACH MODEL
-            # ==========================
+            
             for model_name, metrics in model_report.items():
 
                 with mlflow.start_run(run_name=model_name):
