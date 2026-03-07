@@ -11,7 +11,7 @@ def index():
 @app.route('/predict_web', methods=['POST'])
 def predict_datapoint():
     try:
-        # Get form inputs
+    
         inputs = request.form.to_dict()
 
         data = CustomData(

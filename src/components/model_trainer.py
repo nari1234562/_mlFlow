@@ -3,6 +3,8 @@ import sys
 
 import mlflow
 import mlflow.sklearn
+import dagshub
+dagshub.init(repo_owner='badishanarendar123', repo_name='_mlFlow', mlflow=True)
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -66,7 +68,7 @@ class ModelTrainer:
 
                 "Gradient Boosting": {
                     "n_estimators": [100, 200],
-                    "learning_rate": [0.01, 0.05, 0.1],
+                    "learning_rate": [0.01, 0.05],
                     "max_depth": [3, 5]
                 },
 
@@ -75,16 +77,16 @@ class ModelTrainer:
                     "learning_rate": [0.01, 0.05],
                     "max_depth": [3, 5],
                     "min_child_weight": [1, 3],
-                    "subsample": [0.8, 1.0,0.6],
+                    "subsample": [0.8,0.6],
                     "colsample_bytree": [0.8, 1.0],
                     "gamma": [0, 0.1],
                     "reg_alpha": [0, 0.1],
                     "reg_lambda": [1, 5],
-                    "scale_pos_weight": [1, 2, 5, 10]
+                    "scale_pos_weight": [ 2, 5, 10]
                 }
             }
 
-            
+
             model_report = evaluate_models(
                 X_train,
                 y_train,
@@ -95,19 +97,17 @@ class ModelTrainer:
                 threshold=0.6
             )
 
-       
             mlflow.set_experiment("Loan_Prediction_Experiments")
 
             print("\nLogging experiments to MLflow...\n")
 
-            
             for model_name, metrics in model_report.items():
 
                 with mlflow.start_run(run_name=model_name):
 
                     model = metrics["model"]
 
-                    # log hyperparameters
+                
                     mlflow.log_params(metrics["best_params"])
 
                     # log metrics
@@ -126,7 +126,6 @@ class ModelTrainer:
                     mlflow.log_metric("train_auc", metrics["train_auc"])
                     mlflow.log_metric("test_auc", metrics["test_auc"])
 
-                    # log model
                     mlflow.sklearn.log_model(model, "model")
 
                     print(f"{model_name} logged to MLflow")

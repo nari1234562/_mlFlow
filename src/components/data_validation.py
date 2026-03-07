@@ -8,7 +8,7 @@ from dataclasses import dataclass
 @dataclass
 class DataValidationConfig:
     schema_status_file: str = os.path.join("artifacts", "validation_status.txt")
-    # All 14 columns from your dataset
+    
     required_columns: list = (
         "age", 
         "gender", 

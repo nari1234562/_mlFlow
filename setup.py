@@ -21,7 +21,7 @@ def  get_requirements(file_path:str)->List[str]:
 
 setup(
     
-    name='mlflow',
+    name='loan_prediction_project',
     version='0.0.1',
     author='Narendar',
     author_email='badishanarendar123@gmail.com',

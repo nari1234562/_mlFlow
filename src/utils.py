@@ -39,7 +39,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, param, threshold=0
 
             params = param[model_name]
 
-            # GridSearch
+        
             gs = GridSearchCV(model, params, cv=3, n_jobs=-1)
             gs.fit(X_train, y_train)
 
@@ -47,7 +47,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, param, threshold=0
 
             best_model.fit(X_train, y_train)
 
-            # Probabilities
+            
             if hasattr(best_model, "predict_proba"):
 
                 y_train_prob = best_model.predict_proba(X_train)[:, 1]

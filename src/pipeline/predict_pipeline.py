@@ -1,17 +1,19 @@
 import os
 import sys
 import pandas as pd
-import mlflow.pyfunc
+import mlflow.pyfunc 
+import dagshub
 from src.exception import CustomException
 from src.utils import load_object
 
 class PredictPipeline:
     def __init__(self):
         try:
-       
             import mlflow.sklearn
+            
+            dagshub.init(repo_owner="badishanarendar123", repo_name="_mlFlow", mlflow=True)
 
-            self.model = mlflow.sklearn.load_model("models:/loan_prediction/Production")
+            self.model = mlflow.sklearn.load_model("models:/Loan_prediction@production")
 
         
             preprocessor_path = os.path.join("artifacts", "preprocessor.pkl")
@@ -22,14 +24,13 @@ class PredictPipeline:
 
     def predict(self, features):
         try:
-            # Transform features
+            
             data_scaled = self.preprocessor.transform(features)
-            data_scaled = pd.DataFrame(data_scaled)  # DO NOT specify columns
+            data_scaled = pd.DataFrame(data_scaled) 
 
-            # Predictions
             preds = self.model.predict(data_scaled)
 
-            # Probability if available
+        
             probs = None
             try:
                 if hasattr(self.model, "predict_proba"):
